@@ -1,6 +1,36 @@
-# objectpool
+# Object Pool
 
 Little bit different and magical implementation of thread pool pattern in ruby.
+
+## Installation
+
+    gem install objectpool
+
+## Examples
+
+    require 'objectpool'
+
+    class MyClass 
+      pool_methods :one, :two
+      
+      def one; sleep 1; end
+      def two(arg) sleep 2; return arg end
+    end 
+    
+    pool = MyClass.to_pool(10).new
+    pool.one.async    # the `one` method will be called asynchronously
+    pool.two(2).sync  # this will be called synchronously and it will return result
+    # Result can be handled inside the asynchronous block
+    pool.two(2).async {|result| puts result }
+    
+    # Now you can wait for results
+    pool.wait
+    
+    # "Join" infinity loop with main thread...
+    pool.join
+    
+    # ... or close this object pool
+    pool.close
 
 ## Note on Patches/Pull Requests
  
